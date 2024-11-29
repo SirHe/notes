@@ -21,3 +21,7 @@ the process of judging or calculating the quality, importance, amount, or value 
 
 captures：捕获
 resume：恢复
+encapsulate：封装
+interpreted：解释
+accessible：可访问的
+Generator：生成器

@@ -8,3 +8,5 @@
 # 疑问
 
 1、async 函数的 execution context 是怎样的？
+2、async await 底层使用的是 generator yield 吗？
+3、generator yield 底层是通过分成多个函数实现，还是通过实现 execution context 的暂停与恢复技术？

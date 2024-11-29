@@ -83,6 +83,86 @@ asyncContext 和 running execution context 分别是什么？
 
 ### running execution context
 
+运行时执行上下文其实就是函数**调用栈的栈顶元素**。
+
+# 第三段
+
+```md
+2. Let promise be ? PromiseResolve(%Promise%, value).
+```
+
+# 第四段
+
+```md
+3. Let fulfilledClosure be a new Abstract Closure with parameters (v) that captures asyncContext and performs the following steps when called:
+   a. Let prevContext be the running execution context.
+   b. Suspend prevContext.
+   c. Push asyncContext onto the execution context stack; asyncContext is now the running execution context.
+   d. Resume the suspended evaluation of asyncContext using NormalCompletion(v) as the result of the operation that suspended it.
+   e. Assert: When we reach this step, asyncContext has already been removed from the execution context stack and prevContext is the currently running execution context.
+   f. Return undefined.
+
+将 fulfilledClosure 设置成一个新的带着 v 参数的抽象闭包，它捕获 asyncContext 并且在被调用的时候，执行接下来的步骤：
+a. 将 prevContext 设置成 运行时上下文。
+b. 暂停 prevContext
+c. 将 asyncContext 推入 执行栈；asyncContext 变成现在的 运行时上下文。
+d. 使用 NormalCompletion(v) 恢复 asyncContext 继续执行，作为暂停它这个操作的结果。
+e. 断言：当我们到达这一步时，asyncContext 已经被移除执行上下文调用栈，并且 prevContext 变成了最新的 运行时上下文。
+f. 返回 undefined。
+```
+
+## 疑问
+
+1、NormalCompletion 是什么？
+
+# 第五段
+
+```md
+4. Let onFulfilled be CreateBuiltinFunction(fulfilledClosure, 1, "", « »).
+
+将 onFulfilled 设置成 CreateBuiltinFunction 的 return 结果
+```
+
+## 疑惑
+
+1、哪来的 onFulfilled？
+2、CreateBuiltinFunction 又是什么？
+
+## 解释
+
+### onFulfilled
+
+我们知道 async function return 的是一个 promise。
+
+而一个 promise 中有这么几个核心的部分：
+
+1、promise 有三种状态：`pending、fulfilled、rejected`，promise 被创建时是 pending 状态，可以通过 resolve、reject 以及 executor 执行出错 这三种方式改变状态。
+2、promise 通过 then、catch、finally 收集 onFulfilled、onRejected、onFinally 成功、失败 以及 finally 回调。
+
+那么这里的 onFulfilled 实际上指的就是 promise 成功时调用回调。
+
+### CreateBuiltinFunction
+
+This operation creates a built-in function object.
+
+我猜你肯定会接着问，内部函数对象是什么？关于内部函数对象的解释如下：
+
+A function object is an object that supports the [[Call]] internal method.
+
+这也再一次印证了在 JavaScript 中，object 和 function 的本质区别就是十分包含 `[[call]]` 这个内部方法。
+
+# 第六段
+
+```md
+5. Let rejectedClosure be a new Abstract Closure with parameters (reason) that captures asyncContext and performs the following steps when called:
+   a. Let prevContext be the running execution context.
+   b. Suspend prevContext.
+   c. Push asyncContext onto the execution context stack; asyncContext is now the running execution context.
+   d. Resume the suspended evaluation of asyncContext using ThrowCompletion(reason) as the result of the operation that suspended it.
+   e. Assert: When we reach this step, asyncContext has already been removed from the execution context stack and prevContext is the currently running execution context.
+   f. Return undefined.
+```
+
 # 顶层 await
 
 只能在 ES module 的顶层使用

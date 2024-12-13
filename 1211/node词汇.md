@@ -17,5 +17,5 @@ previously：之前
 proper：合适的
 primarily：主要地
 interaction：交互
-I/O-heavy：IO密集型
-CPU-heavy：CPU密集型
+I/O-heavy：IO 密集型
+CPU-heavy：CPU 密集型
